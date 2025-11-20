@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     setlocale(0, "");
-    srand(time(0));
+    srand(time(NULL));
     while (1) {
         cout << "1.Игра 2.Выход: "; int c; cin >> c;
         if (c == 2) break;
