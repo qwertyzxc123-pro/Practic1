@@ -1,0 +1,141 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <limits>
+
+using namespace std;
+
+int difficulty = 1, score = 0;
+const int TOTAL_QUESTIONS = 5;
+
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void clearInput() {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+int randomNum(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+void getQuestion(int& a, int& b, char& op) {
+    int ops[] = { 1, 2, 3, 4 };
+    int opChoice = (difficulty == 5) ? ops[randomNum(0, 3)] : difficulty;
+
+    switch (opChoice) {
+    case 1: op = '+'; a = randomNum(1, 100); b = randomNum(1, 100); break;
+    case 2: op = '-'; a = randomNum(1, 100); b = randomNum(1, a); break;
+    case 3: op = '*'; a = randomNum(1, 20); b = randomNum(1, 10); break;
+    case 4: op = '/'; b = randomNum(1, 20); a = b * randomNum(1, 10); break;
+    }
+}
+
+bool checkAnswer(int a, int b, char op, int ans) {
+    int correct;
+    switch (op) {
+    case '+': correct = a + b; break;
+    case '-': correct = a - b; break;
+    case '*': correct = a * b; break;
+    case '/': correct = a / b; break;
+    }
+
+    if (ans == correct) {
+        cout << "✓ Правильно!\n";
+        return true;
+    }
+    cout << "✗ Неправильно! Ответ: " << correct << "\n";
+    return false;
+}
+
+void startGame() {
+    clearScreen();
+    cout << "[ + ] Начинаем тест! (5 вопросов)\n\n";
+    score = 0;
+
+    for (int i = 1; i <= TOTAL_QUESTIONS; i++) {
+        int a, b, ans;
+        char op;
+        getQuestion(a, b, op);
+        cout << i << ". " << a << " " << op << " " << b << " = ";
+        cin >> ans;
+        if (checkAnswer(a, b, op, ans)) score++;
+        cout << "\n";
+    }
+
+    cout << "[ + ] Результат: " << score << "/" << TOTAL_QUESTIONS << "\n";
+    if (score == TOTAL_QUESTIONS) cout << "[ + ] Отлично!\n";
+    else if (score >= 3) cout << "[ + ] Хорошо!\n";
+    else cout << "[ + ] Попробуйте еще раз!\n";
+
+    cout << "\nНажмите Enter...";
+    clearInput();
+    cin.get();
+}
+
+void settings() {
+     int choice;
+    do {
+        clearScreen();
+        cout << "[ + ] Настройки\n\n";
+        cout << "Текущий уровень: ";
+        string levels[] = { "Сложение", "Вычитание", "Умножение", "Деление", "Mix" };
+        cout << levels[difficulty - 1] << "\n\n";
+        cout << "[1] Сложение\n[2] Вычитание\n[3] Умножение\n[4] Деление\n[5] Mix\n[0] Назад\n\n";
+        cout << "Выбор: ";
+        cin >> choice;
+
+        if (choice >= 1 && choice <= 5) {
+            difficulty = choice;
+            cout << "\n[ + ] Уровень изменен!\n";
+            cout << "Нажмите Enter...";
+            clearInput();
+            cin.get();
+        }
+    } while (choice != 0);
+}
+
+void leaderboard() {
+    clearScreen();
+    cout << "[ + ] Таблица лидеров\n\n";
+    cout << "Последний результат: " << score << "/" << TOTAL_QUESTIONS << "\n";
+
+    string status[] = { "Нужно практиковаться", "Хорошо", "Отлично!", "Превосходно!", "Гений!" };
+    int index = (score == 0) ? 0 : (score <= 2 ? 1 : (score <= 3 ? 2 : (score <= 4 ? 3 : 4)));
+    cout << "Статус: " << status[index] << "\n\n";
+
+    cout << "Нажмите Enter...";
+    clearInput();
+    cin.get();
+}
+
+int main() {
+    setlocale(0, "");
+    srand(time(0));
+    int choice;
+
+    do {
+        clearScreen();
+        cout << "[ + ] Главное меню\n\n";
+        cout << "[1] Начать игру\n[2] Настройки\n[3] Таблица лидеров\n[4] Выход\n\n";
+        cout << "Выберите: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1: startGame(); break;
+        case 2: settings(); break;
+        case 3: leaderboard(); break;
+        case 4: cout << "\nДо свидания!\n"; break;
+        default: cout << "\nНеверный выбор!\nНажмите Enter...";
+            clearInput(); cin.get();
+        }
+    } while (choice != 4);
+
+    return 0;
+}
