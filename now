@@ -1,0 +1,145 @@
+#include <iostream>
+#include <windows.h>
+
+using namespace std;
+
+int difficulty = 1;
+int score = 0;
+
+int randomNum(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+void startGame() {
+    system("cls");
+    cout << "[ + ] Начинаем тест! (5 вопросов)\n\n";
+    score = 0;
+
+    for (int i = 1; i <= 5; i++) {
+        int a, b, ans, correct_ans;
+        char op;
+        int current_diff = difficulty;
+        
+        if (difficulty == 5) {
+            current_diff = 1 + rand() % 4; 
+        }
+
+        if (current_diff == 1) {
+            op = '+';
+            a = randomNum(1, 100);
+            b = randomNum(1, 100);
+            correct_ans = a + b;
+        } else if (current_diff == 2) {
+            op = '-';
+            a = randomNum(1, 100);
+            b = randomNum(1, a);
+            correct_ans = a - b;
+        } else if (current_diff == 3) {
+            op = '*';
+            a = randomNum(1, 20);
+            b = randomNum(1, 10);
+            correct_ans = a * b;
+        } else if (current_diff == 4) {
+            op = '/';
+            b = randomNum(1, 20);
+            a = b * randomNum(1, 10);
+            correct_ans = a / b;
+        }
+
+        cout << i << ". " << a << " " << op << " " << b << " = ";
+        cin >> ans;
+
+        if (ans == correct_ans) {
+            cout << "✓ Правильно!\n\n";
+            score++;
+        } else {
+            cout << "✗ Неправильно! Ответ: " << correct_ans << "\n\n";
+        }
+    }
+
+    cout << "[ + ] Результат: " << score << "/5\n";
+    
+    if (score == 5) {
+        cout << "[ + ] Отлично!\n";
+    } else if (score >= 3) {
+        cout << "[ + ] Хорошо!\n";
+    } else {
+        cout << "[ + ] Попробуйте еще раз!\n";
+    }
+
+    cout << "\n";
+    system("pause");
+}
+
+void settings() {
+    int choice = -1;
+    while (choice != 0) {
+        system("cls");
+        cout << "[ + ] Настройки\n\n";
+        cout << "Текущий уровень: ";
+        
+        if (difficulty == 1) cout << "Сложение\n\n";
+        else if (difficulty == 2) cout << "Вычитание\n\n";
+        else if (difficulty == 3) cout << "Умножение\n\n";
+        else if (difficulty == 4) cout << "Деление\n\n";
+        else if (difficulty == 5) cout << "Mix\n\n";
+
+        cout << "[1] Сложение\n[2] Вычитание\n[3] Умножение\n[4] Деление\n[5] Mix\n[0] Назад\n\n";
+        cout << "Выбор: ";
+        cin >> choice;
+
+        if (choice >= 1 && choice <= 5) {
+            difficulty = choice;
+            cout << "\n[ + ] Уровень изменен!\n";
+            system("pause");
+        }
+    }
+}
+
+void leaderboard() {
+    system("cls");
+    cout << "[ + ] Таблица лидеров\n\n";
+    cout << "Последний результат: " << score << "/5\n";
+
+    cout << "Статус: ";
+    if (score == 0) cout << "Нужно практиковаться";
+    else if (score <= 2) cout << "Хорошо";
+    else if (score == 3) cout << "Отлично!";
+    else if (score == 4) cout << "Превосходно!";
+    else if (score == 5) cout << "Гений!";
+    cout << "\n\n";
+
+    system("pause");
+}
+
+int main() {
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+    
+    srand(GetTickCount()); 
+
+    int choice = 0;
+
+    while (choice != 4) {
+        system("cls");
+        cout << "[ + ] Главное меню\n\n";
+        cout << "[1] Начать игру\n[2] Настройки\n[3] Таблица лидеров\n[4] Выход\n\n";
+        cout << "Выберите: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            startGame();
+        } else if (choice == 2) {
+            settings();
+        } else if (choice == 3) {
+            leaderboard();
+        } else if (choice == 4) {
+            cout << "\nДо свидания!\n";
+        } else {
+            cout << "\nНеверный выбор!\n";
+            system("pause");
+        }
+    }
+
+    return 0;
+}
